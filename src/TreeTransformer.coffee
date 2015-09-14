@@ -1,5 +1,3 @@
-TreeModel = require 'TreeModel'
-
 # Returns the first item in `l` which "matches" with `val` via `matcher`.
 firstMatch = (l, val, matcher) ->
   for i in l
@@ -10,8 +8,10 @@ firstMatch = (l, val, matcher) ->
 class TreeTransformer
   ###
   Creates an empty `TreeTransformer`.
+
+  @param [Function] TreeModelConstructor Dependency injection for tree models.
   ###
-  constructor: () ->
+  constructor: (@TreeModelConstructor) ->
     @_nodeCases = []
 
   ###
@@ -37,7 +37,7 @@ class TreeTransformer
       predicate model.value, model
 
     if nodeCase?
-      r = new TreeModel (nodeCase.transform model.value, model)
+      r = new @TreeModelConstructor (nodeCase.transform model.value, model)
       # console.log 'before', (JSON.stringify model.orderedChildrenKeys)
       model.orderedChildrenKeys.forEach (key) =>
         child = model.getChild key

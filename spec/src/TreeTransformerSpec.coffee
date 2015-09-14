@@ -1,9 +1,9 @@
-TreeModel = require 'TreeModel'
+TreeModel = require './TreeModel.js'
 TreeTransformer = require '../../build/TreeTransformer.js'
 
 describe 'TreeTransformer', () ->
   beforeEach () ->
-    @transformer = new TreeTransformer()
+    @transformer = new TreeTransformer TreeModel
     rootValue =
       name: 'root'
       type: 'a'

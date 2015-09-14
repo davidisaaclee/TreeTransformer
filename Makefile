@@ -5,7 +5,7 @@ OUTPUT_DIR=./build
 
 CFLAGS_TEST=-o $(TEST_DIR)/build -c
 TEST_DIR=./spec
-SPEC=$(TEST_DIR)/src/TreeTransformerSpec.coffee
+SPEC=$(TEST_DIR)/src/*.coffee
 
 JASMINE=node ./node_modules/jasmine/bin/jasmine
 

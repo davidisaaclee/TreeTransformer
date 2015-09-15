@@ -9,9 +9,9 @@ class TreeTransformer
   ###
   Creates an empty `TreeTransformer`.
 
-  @param [Function] TreeModelConstructor Dependency injection for tree models.
+  @param [Function] makeDefaultTree Dependency injection for tree models.
   ###
-  constructor: (@TreeModelConstructor) ->
+  constructor: (@makeDefaultTree) ->
     @_nodeCases = []
 
   ###
@@ -19,11 +19,13 @@ class TreeTransformer
 
   @param [Function<a, TreeModel<a>, Boolean>] predicate
   @param [Function<a, TreeModel<a>, b>] transform
+  @param [Function<a, TreeModel<a>>] treeConstructor
   ###
-  addNodeCase: (predicate, transform) ->
+  addNodeCase: (predicate, transform, treeConstructor = @makeDefaultTree) ->
     nodeCase =
       predicate: predicate
       transform: transform
+      constructor: treeConstructor
     @_nodeCases.push nodeCase
 
   ###
@@ -37,14 +39,12 @@ class TreeTransformer
       predicate model.value, model
 
     if nodeCase?
-      r = new @TreeModelConstructor (nodeCase.transform model.value, model)
-      # console.log 'before', (JSON.stringify model.orderedChildrenKeys)
+      r = nodeCase.constructor (nodeCase.transform model.value, model)
       model.orderedChildrenKeys.forEach (key) =>
         child = model.getChild key
         transformedChild = @transform child
         if transformedChild?
           r.addChild key, transformedChild
-      # console.log 'after', (JSON.stringify model.orderedChildrenKeys)
       return r
     else
       return null

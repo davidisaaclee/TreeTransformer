@@ -76,7 +76,7 @@ class TreeTransformer
           [parentPath..., key] = path
           mostRecentResult
             .navigate parentPath
-            .replaceChild key, branch
+            .setChild key, branch
         onTransform mostRecentResult
 
       model.addEventListener 'changed', cb

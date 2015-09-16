@@ -48,6 +48,7 @@ class TreeTransformer
           r.addChild key, transformedChild
       return r
     else
+      console.warn 'No case matching node ', model
       return null
 
 

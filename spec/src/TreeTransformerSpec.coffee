@@ -85,8 +85,14 @@ describe 'TreeTransformer', () ->
       do transformCallbackSpy
       expect (@model.value.foo + 1)
         .toBe transformed.value.foo
-      expect (@model.getChild('b').value.foo - 1)
-        .toBe transformed.getChild('b').value.foo
+
+      if @model.getChild('b')?
+        expect (@model.getChild('b').value.foo - 1)
+          .toBe transformed.getChild('b').value.foo
+
+    expect transformCallbackSpy.calls.count()
+      .toBe 1
+    transformCallbackSpy.calls.reset()
 
     @model.put ['b'],
       foo: 0

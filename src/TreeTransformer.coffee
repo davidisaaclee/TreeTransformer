@@ -9,7 +9,8 @@ class TreeTransformer
   ###
   Creates an empty `TreeTransformer`.
 
-  @param [Function] makeDefaultTree Dependency injection for tree models.
+  @param [Function] makeDefaultTree Dependency injection for tree models. Should
+    not require use of `new`.
   ###
   constructor: (@makeDefaultTree) ->
     @_nodeCases = []
@@ -59,12 +60,18 @@ class TreeTransformer
     called when the model is transformed, providing the transformed and
     untransformed models as parameters.
   @param [Boolean] lazy `true` if this should only update changed branches.
+  @param [Boolean] transformNow `true` if this method should immediately perform
+    a transform upon being called; else, wait for the first modification.
   @return [Function] An unsubscribe function.
   ###
-  watch: (model, onTransform, lazy = true) -> switch lazy
+  watch: (model, onTransform, lazy = true, transformNow = true) -> switch lazy
     when false
       cb = () => onTransform (@transform model), model
       model.addEventListener 'changed', cb
+
+      if transformNow
+        do cb
+
       return () -> model.removeEventListener 'changed', cb
     when true
       mostRecentResult = @transform model
@@ -80,6 +87,10 @@ class TreeTransformer
         onTransform mostRecentResult
 
       model.addEventListener 'changed', cb
+
+      if transformNow
+        onTransform mostRecentResult, model
+
       return () -> model.removeEventListener 'changed', cb
 
 

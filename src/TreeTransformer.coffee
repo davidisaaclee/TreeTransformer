@@ -16,7 +16,7 @@ class TreeTransformer
     @_nodeCases = []
 
   ###
-  Adds a transform for a node which passes the supplied predicate.
+  Adds a transform for nodes which pass the supplied predicate.
 
   @param [Function<a, TreeModel<a>, Boolean>] predicate
   @param [Function<a, TreeModel<a>, b>] transform
@@ -85,7 +85,7 @@ class TreeTransformer
           mostRecentResult
             .navigate parentPath
             .setChild key, branch
-        onTransform mostRecentResult
+        onTransform mostRecentResult, model
 
       model.addEventListener 'changed', cb
 

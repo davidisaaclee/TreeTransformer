@@ -82,7 +82,7 @@ describe 'TreeTransformer', () ->
     transformedModel = null
     unsub = @transformer.watch @model, (transformed) =>
       transformedModel = transformed
-      do transformCallbackSpy
+      transformCallbackSpy arguments...
       expect (@model.value.foo + 1)
         .toBe transformed.value.foo
 
@@ -92,6 +92,10 @@ describe 'TreeTransformer', () ->
 
     expect transformCallbackSpy.calls.count()
       .toBe 1
+    expect transformCallbackSpy.calls.argsFor(0)[0]
+      .toBe transformedModel
+    expect transformCallbackSpy.calls.argsFor(0)[1]
+      .toBe @model
     transformCallbackSpy.calls.reset()
 
     @model.put ['b'],
@@ -99,12 +103,21 @@ describe 'TreeTransformer', () ->
       type: 'b'
     expect transformCallbackSpy.calls.count()
       .toBe 1
+    expect transformCallbackSpy.calls.argsFor(0)[0]
+      .toBe transformedModel
+    expect transformCallbackSpy.calls.argsFor(0)[1]
+      .toBe @model
+    transformCallbackSpy.calls.reset()
 
     @model.put ['b', 'a'],
       foo: 0
       type: 'a'
     expect transformCallbackSpy.calls.count()
-      .toBe 2
+      .toBe 1
+    expect transformCallbackSpy.calls.argsFor(0)[0]
+      .toBe transformedModel
+    expect transformCallbackSpy.calls.argsFor(0)[1]
+      .toBe @model
     expect @model.navigate(['b', 'a']).value.foo + 1
       .toBe transformedModel.navigate(['b', 'a']).value.foo
 
